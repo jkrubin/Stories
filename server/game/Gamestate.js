@@ -10,7 +10,8 @@ class Gamestate{
 	}
 
 	printRooms(){
-		console.log({this.rooms})
+		let roomArr = this.rooms
+		console.log({roomArr})
 	}
 }
 
