@@ -3,17 +3,18 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
 const {sequelize} = require('../models')
+const Gamestate = require('../game/Gamestate')
 
 const app = express()
 app.use(morgan('combined'))
 app.use(bodyParser.json())
 app.use(cors())
 
-
 let http = require('http').Server(app)
 var io = require('socket.io')(http)
+let state = new Gamestate()
 
-require('./routes')(app, io)
+require('./routes')(app, io, state)
 app.get('/', (req, res) => res.send('Hello World!'))
 
 sequelize

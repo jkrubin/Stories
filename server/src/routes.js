@@ -1,6 +1,6 @@
 const AuthenticationController = require('../controllers/AuthenticationController')
 const AuthenticationControllerPolicy = require('../policies/AuthenticationControllerPolicy')
-module.exports = (app, io) => {
+module.exports = (app, io, state) => {
 
 	app.get('/route', (req, res) => res.send('routes'))
 
@@ -11,7 +11,7 @@ module.exports = (app, io) => {
 		socket.on('disconnect', () => {console.log('disconnect')})
 		socket.on('newMessage', (msg) => {
 			console.log(msg)
-			io.emit('newMessage' + msg.eventId, msg)
+			io.emit('newMessage' + msg.roomId, msg)
 		})
 	})
 
@@ -35,4 +35,13 @@ module.exports = (app, io) => {
 			AuthenticationController.requestEmailVerification)
 		app.get('/verifyEmail/:token',
 			AuthenticationController.verifyEmail)
+
+	//rooms
+		app.post('/newRoom',
+			AuthenticationController.matchUserToken,
+			(req,res)=>{
+				state.createRoom(1)
+				state.printRooms
+				res.send("room created")
+			})
 }
