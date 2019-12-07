@@ -37,11 +37,14 @@ class Header extends React.Component{
 		return(
 			<div className = "header">
 				<div className="header-content">
-					<h1>Stories With Enemies</h1>
+					<img 
+						src = {require('../../assets/Stories_Logo.png')} 
+						style = {{height:'100px', width:'auto'}}
+					/>
 				</div>
 				<AuthConsumer>
 					{({isAuth, login, logout, auth}) => (
-					<div>
+					<div className = 'login-area'>
 						{isAuth? (
 							<div className="login-form">
 								<div className="account">
@@ -54,30 +57,28 @@ class Header extends React.Component{
 							<div className="login-form">
 								<table>
 									<tr>
-										<td> <label> email: </label> </td>
-										<td> <label> password: </label> </td>
+										<div className="form-group">
+											<input 
+											type="text"
+											className="email-form form"
+											value={this.state.email}
+											name="email" 
+											onChange = {this.handleChange}
+											placeholder = "email" />
+										</div>
 									</tr>
 									<tr>
-										<td>
-											<div className="form-group">
-												<input 
-												type="text"
-												className="email-form form"
-												value={this.state.email}
-												name="email" 
-												onChange = {this.handleChange} />
-											</div>
-										</td>
-										<td>
-											<div className="form-group">
-												<input 
-												type="password"
-												className="password-form form"
-												value={this.state.password}
-												name="password" 
-												onChange = {this.handleChange} />
-											</div>
-										</td>
+										<div className="form-group">
+											<input 
+											type="password"
+											className="password-form form"
+											value={this.state.password}
+											name="password" 
+											onChange = {this.handleChange}
+											placeholder = "password" />
+										</div>
+									</tr>
+									<tr>
 										<div className="form-submit">
 											<button className="button-submit" onClick={this.handleSubmit}>Login</button>
 										</div>
