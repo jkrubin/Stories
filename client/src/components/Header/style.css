@@ -1,0 +1,43 @@
+.header{
+	position: sticky;
+	top:0px;
+	height:auto;
+	background-color: gray;
+	background-size: auto 100%;
+	display: inline-block;
+	width: 100%;
+	z-index: 2;
+}
+.header h1 {
+	margin:0px;
+}
+.header-content{
+	float: left;
+}
+.login-form{
+	float: right;
+}
+.account{
+	display: flex;
+	vertical-align: middle;
+}
+.logout{
+	align-self: center;
+}
+.view-ballot{
+	margin: auto;
+	margin-right: 15px;
+	border: 1px solid gray;
+	border-radius: 5px;
+	background: rgb(241, 250, 147);
+	cursor: pointer;
+}
+.view-ballot h4{
+	margin:3px;
+}
+.team-name{
+	margin: auto;
+	margin-left: 5px;
+	margin-right: 5px;
+	max-width: 100px;
+}
