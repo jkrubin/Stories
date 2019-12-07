@@ -27,5 +27,5 @@ sequelize
 
 sequelize.sync()
 	.then(() => {
-		http.listen(8081, () => console.log('API with sockets listening on port 8081!'))
+		http.listen(8082, () => console.log('API with sockets listening on port 8082!'))
 	})  
