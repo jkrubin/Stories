@@ -10,7 +10,7 @@ module.exports = {
 	joinRoom(req, res, state){
 		let {user, roomId} = req.body
 		let room = state.connectUserToRoom(user, roomId)
-		if(room =! -1){
+		if(room != -1){
 			res.send({room})
 			return room
 		}
