@@ -16,5 +16,10 @@ module.exports = {
 			return room
 		}
 		return res.status(500).send({error: "could not join room"})
+	},
+	checkActiveGame(req, res, state){
+		let {userId} = req.body
+		let activeRoom = clientCheck(userId)
+		res.send({activeRoom})
 	}
 }

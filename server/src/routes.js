@@ -67,4 +67,9 @@ module.exports = (app, io, state) => {
 				io.emit('newMessage' + roomId, {users: room.users})
 
 			})
+		app.post('/checkActiveGame', 
+			(req, res) =>{
+				room = GameController.checkActiveGame(req, res, state)
+
+			})
 }
