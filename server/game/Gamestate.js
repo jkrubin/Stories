@@ -18,7 +18,7 @@ class Gamestate{
 		}
 	}
 	removeClient(id){
-		delete clientPool[id]
+		delete this.clientPool[id]
 	}
 	createRoom(id, user){
 		if(!id){
