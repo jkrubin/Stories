@@ -1,8 +1,9 @@
 class Room{
-	constructor(id, user){
+	constructor(id, user, roomData){
 		this.id = id
 		this.words = []
 		this.users = [user]
+		this.name = roomData.name
 
 		this.counter = 0
 	}

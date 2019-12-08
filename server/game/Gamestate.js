@@ -20,14 +20,14 @@ class Gamestate{
 	removeClient(id){
 		delete this.clientPool[id]
 	}
-	createRoom(id, user){
+	createRoom(id, user, roomData){
 		if(!id){
 			return -1
 		}
 		if(this.isRoomExists(id)){
 			return -1
 		}
-		if(this.rooms[id] = new Room(id, user)){
+		if(this.rooms[id] = new Room(id, user, roomData)){
 			//Set active and total client pool to room id
 			this.clientPool[id] = id
 			this.clientRoomMap[id] = id
