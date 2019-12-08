@@ -1,6 +1,6 @@
 module.exports = {
 	createRoom(req, res, state){
-		let room = state.createRoom(req.body.id)){
+		let room = state.createRoom(req.body.id)
 		if(room){
 			return res.send({room})
 		}

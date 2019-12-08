@@ -14,7 +14,7 @@ module.exports = (app, io, state) => {
 			console.log(msg)
 			io.emit('newMessage' + msg.roomId, msg)
 		})
-		soket.on('joinRoom', (req) =>{
+		socket.on('joinRoom', (req) =>{
 			GameController.joinRoom(req)
 		})
 	})
@@ -43,7 +43,7 @@ module.exports = (app, io, state) => {
 	//rooms
 		app.post('/newRoom',
 			AuthenticationController.matchUserToken,
-			GameController.createRoom(req, res, state) )
+			(req, res) => GameController.createRoom(req, res, state) )
 		app.get('/returnRooms', (req, res) => {
 			let rooms = state.getRooms()
 			res.send({rooms})

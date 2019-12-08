@@ -9,7 +9,7 @@ class Gamestate{
 		if(!id){
 			return -1
 		}
-		if(isRoomExists(id)){
+		if(this.isRoomExists(id)){
 			return -1
 		}
 		if(this.rooms[id] = new Room(id)){
@@ -28,7 +28,7 @@ class Gamestate{
 
 	}
 	connectUserToRoom(user, roomId){
-		if(isRoomExists(roomId)){
+		if(this.isRoomExists(roomId)){
 			this.rooms[roomId].addUser(user)
 			return this.rooms[roomId]
 		}
