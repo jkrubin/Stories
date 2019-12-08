@@ -10,8 +10,9 @@ class StoryBox extends React.Component{
 
 		this.state = {
 			input: '',
+			nameInput: '',
 			story: [],
-			room: -1,
+			room: {id: -1},
 			showRooms: false,
 			availableRooms: [],
 		}
@@ -34,6 +35,9 @@ class StoryBox extends React.Component{
 			user: {
 				id: this.context.auth.user.id,
 				name: this.context.auth.user.name
+			},
+			roomData:{
+				name: this.state.nameInput
 			}
 		}
 		fetch(api + '/newRoom', {
@@ -49,7 +53,7 @@ class StoryBox extends React.Component{
 			if(data.error){
 				console.log(data.error)
 			}else{
-				this.setState({room: data.room.id})
+				this.setState({room: data.room})
 				this.socket.on('newMessage' + data.room.id, (msg) => {
 					console.log('connect')
 					this.setState((prevState) => {
@@ -112,7 +116,7 @@ class StoryBox extends React.Component{
 			if(data.error){
 				console.log(data.error)
 			}else{
-				this.setState({room: data.room.id})
+				this.setState({room: data.room})
 				this.socket.on('newMessage' + data.room.id, (msg) => {
 					console.log('connect')
 					this.setState((prevState) => {
@@ -135,7 +139,7 @@ class StoryBox extends React.Component{
 	handleSubmit(){
 		let message = {
 			userId: this.context.auth.user.id, 
-			roomId: this.state.room,
+			roomId: this.state.room.id,
 			message: this.state.input,
 		}
 		this.socket.emit('newMessage', message)
@@ -148,17 +152,32 @@ class StoryBox extends React.Component{
 		let roomsDisplay = this.state.availableRooms.map((room) => {
 			return(
 				<li className="room-list-item">
-					id: {room.id}, users: {room.users.length}
+					id: {room.name}, users: {room.users.length}
 					<button className = "button" onClick={()=>{this.joinRoom(room.id)}}> join </button>
 				</li>
 			)
 		})	
 		return(
 			<div className = "story-box">
-				{this.context.isAuth &&
+				{this.state.room.id === -1 ?
 					<div>
-						<h3>Create a new Room</h3>
-						<button className="button" onClick={this.createRoom}> Create Room! </button>
+						<table>
+							<tr>
+								<input
+								type="text"
+								classname="form"
+								value = {this.state.nameInput}
+								name="nameInput"
+								onChange = {this.handleChange}
+								placeholder = "room name" />
+
+								<button className="button" onClick={this.createRoom}> Create Room! </button>
+							</tr>
+						</table>
+					</div>
+					:
+					<div>
+						<h1>Current Room: {this.state.room.name}</h1>
 					</div>
 				}
 				<button className="button rooms-menu-toggle" onClick={this.toggleRoomsMenu}> Show rooms </button>

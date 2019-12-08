@@ -57,6 +57,12 @@ class Gamestate{
 
 	}
 	connectUserToRoom(user, roomId){
+		if(this.clientRoomMap[user.id] == roomId){
+			if(this.clientPool[user.id]){
+				this.clientPool[user.id] = roomId
+			}
+			return this.rooms[roomId]
+		}
 		if(this.isRoomExists(roomId)){
 			this.rooms[roomId].addUser(user)
 			this.clientPool[user.id] = roomId

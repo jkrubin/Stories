@@ -13,7 +13,6 @@ class Homepage extends React.Component{
 	render(){
 		return(
 			<div className="homepage">
-				<h3> Homepage </h3>
 				{this.context.isAuth?
 					<StoryBox />
 					:
