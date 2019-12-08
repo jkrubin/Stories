@@ -8,14 +8,13 @@ module.exports = (app, io, state) => {
 	//Sockets
 
 	io.on('connection',(socket) => {
-		console.log(`client -  ${socket.handshake.query['userId']}  - connected`)
+		let id = socket.handshake.query['userId']
+		state.addClient(id)
+		console.log(`userId -  ${id}  - connected`)
 		socket.on('disconnect', () => {console.log('disconnect')})
 		socket.on('newMessage', (msg) => {
 			console.log(msg)
 			io.emit('newMessage' + msg.roomId, msg)
-		})
-		socket.on('clientSync', (req) =>{
-			GameController.clientSync(req)
 		})
 	})
 
@@ -47,6 +46,10 @@ module.exports = (app, io, state) => {
 		app.get('/returnRooms', (req, res) => {
 			let rooms = state.getRooms()
 			res.send({rooms})
+		})
+		app.get('/returnClients', (req, res) =>{
+			let pools = state.getClientPools()
+			res.send({pools})
 		})
 		app.post('/joinRoom',
 			(req, res)=>{
