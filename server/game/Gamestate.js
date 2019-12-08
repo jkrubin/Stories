@@ -5,20 +5,20 @@ class Gamestate{
 		this.rooms = {}
 	}
 
-	createRoom(id){
+	createRoom(id, user){
 		if(!id){
 			return -1
 		}
 		if(this.isRoomExists(id)){
 			return -1
 		}
-		if(this.rooms[id] = new Room(id)){
+		if(this.rooms[id] = new Room(id, user)){
 			return this.rooms[id]
 		}
 		return false
 	}
 	isRoomExists(id){
-		return(this.rooms[id] == true)
+		return(this.rooms.hasOwnProperty(id))
 	}
 	removeRoom(id){
 		if(delete this.rooms[id]){
