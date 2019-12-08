@@ -8,14 +8,14 @@ module.exports = (app, io, state) => {
 	//Sockets
 
 	io.on('connection',(socket) => {
-		console.log(`client -  ${socket.id}  - connected`)
+		console.log(`client -  ${socket.handshake.query['userId']}  - connected`)
 		socket.on('disconnect', () => {console.log('disconnect')})
 		socket.on('newMessage', (msg) => {
 			console.log(msg)
 			io.emit('newMessage' + msg.roomId, msg)
 		})
-		socket.on('joinRoom', (req) =>{
-			GameController.joinRoom(req)
+		socket.on('clientSync', (req) =>{
+			GameController.clientSync(req)
 		})
 	})
 

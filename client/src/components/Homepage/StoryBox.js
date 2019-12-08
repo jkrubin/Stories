@@ -15,7 +15,7 @@ class StoryBox extends React.Component{
 			showRooms: false,
 			availableRooms: [],
 		}
-		this.socket = openSocket(api)
+		this.socket = openSocket(api, {query: `userId=${context.auth.user.id}`})
 		this.handleChange = this.handleChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
 
