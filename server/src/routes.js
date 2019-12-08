@@ -11,7 +11,11 @@ module.exports = (app, io, state) => {
 		let id = socket.handshake.query['userId']
 		state.addClient(id)
 		console.log(`userId -  ${id}  - connected`)
-		socket.on('disconnect', () => {console.log('disconnect')})
+		
+		socket.on('disconnect', () => {
+			console.log(`userId -  ${id}  - disconnected`)
+			state.removeClient(id)
+		})
 		socket.on('newMessage', (msg) => {
 			console.log(msg)
 			io.emit('newMessage' + msg.roomId, msg)
