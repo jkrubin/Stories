@@ -76,7 +76,7 @@ class Gamestate{
 		return this.rooms
 	}
 	getClientPools(){
-		return ({clientPool, clientRoomMap})
+		return ({clientPool: this.clientPool, ClientRoomMap: this.clientRoomMap})
 	}
 }
 
