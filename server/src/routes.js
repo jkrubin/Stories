@@ -18,6 +18,7 @@ module.exports = (app, io, state) => {
 		})
 		socket.on('newMessage', (msg) => {
 			console.log(msg)
+			state.submitWord(msg)
 			io.emit('newMessage' + msg.roomId, msg)
 		})
 	})
@@ -59,6 +60,10 @@ module.exports = (app, io, state) => {
 			(req, res)=>{
 				let {user, roomId} = req.body
 				room = GameController.joinRoom(req, res, state)
+				if(!room){
+					console.log(room)
+					return
+				}
 				io.emit('newMessage' + roomId, {users: room.users})
 
 			})

@@ -1,6 +1,6 @@
 class Room{
 	constructor(id, user, roomData){
-		this.id = id
+		this.roomId = id
 		this.words = []
 		this.users = [user]
 		this.name = roomData.name
@@ -12,12 +12,12 @@ class Room{
 	}
 	removeUser(id){
 		let newUsers = this.users.filter((user) => {
-			return (id != user.id)
+			return (roomId != user.id)
 		})
 		this.users = newUsers
 	}
 
-	addWords(words){
+	pushWord(words){
 		this.words.push(words)
 		return this.words
 	}

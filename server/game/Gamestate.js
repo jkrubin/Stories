@@ -25,7 +25,7 @@ class Gamestate{
 			return -1
 		}
 		if(this.isRoomExists(id)){
-			return -1
+			return this.rooms[id]
 		}
 		if(this.rooms[id] = new Room(id, user, roomData)){
 			//Set active and total client pool to room id
@@ -67,11 +67,19 @@ class Gamestate{
 			this.rooms[roomId].addUser(user)
 			this.clientPool[user.id] = roomId
 			this.clientRoomMap[user.id] = roomId
+			console.log(this.rooms[roomId])
 			return this.rooms[roomId]
 		}
 		return -1
 	}
-
+	submitWord(msg){
+		let id = msg.roomId
+		if(this.rooms[id]){
+			this.rooms[id].pushWord(msg)
+			return true
+		}
+		return false
+	}
 	printRooms(){
 		let roomArr = this.rooms
 		console.log(`printing ${roomArr.length} rooms`)
