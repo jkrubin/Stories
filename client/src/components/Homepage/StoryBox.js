@@ -15,6 +15,8 @@ class StoryBox extends React.Component{
 		this.socket = openSocket(api)
 		this.handleChange = this.handleChange.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
+
+		this.createRoom = this.createRoom.bind(this)
 	}
 
 	componentWillMount(){
@@ -26,6 +28,32 @@ class StoryBox extends React.Component{
 			})
 		})
 	}
+
+	createRoom(){
+		let data = {
+			id: this.context.auth.user.id
+		}
+		fetch(api + '/newRoom', {
+			method: "POST",
+			headers:{
+				"Content-Type": "application/json",
+				"x-access-token": this.context.auth.token
+			},
+			body: JSON.stringify(data)
+		})
+		.then(res => res.json())
+		.then((data) => {
+			if(data.error){
+				console.log(data.error)
+			}else{
+				console.log({data})
+			}
+		})
+		.catch((error) => {
+			console.log(error)
+		})
+	}
+
 	handleChange(event){
 		let {name, value} = event.target
 		this.setState({[name]:value})
@@ -45,6 +73,12 @@ class StoryBox extends React.Component{
 		})		
 		return(
 			<div className = "story-box">
+				{this.context.isAuth &&
+					<div>
+						<h3>Create a new Room</h3>
+						<button className="button" onClick={this.createRoom}> Create Room! </button>
+					</div>
+				}
 				<div className="story-display">
 					{storyDisplay}
 				</div>

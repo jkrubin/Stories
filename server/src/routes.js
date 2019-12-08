@@ -1,5 +1,6 @@
 const AuthenticationController = require('../controllers/AuthenticationController')
 const AuthenticationControllerPolicy = require('../policies/AuthenticationControllerPolicy')
+const GameController = require('../game/GameController')
 module.exports = (app, io, state) => {
 
 	app.get('/route', (req, res) => res.send('routes'))
@@ -7,11 +8,14 @@ module.exports = (app, io, state) => {
 	//Sockets
 
 	io.on('connection',(socket) => {
-		console.log('connection')
+		console.log(`connection from ${socket.handshake.address.address}`)
 		socket.on('disconnect', () => {console.log('disconnect')})
 		socket.on('newMessage', (msg) => {
 			console.log(msg)
 			io.emit('newMessage' + msg.roomId, msg)
+		})
+		soket.on('joinRoom', (req) =>{
+			GameController.joinRoom(req)
 		})
 	})
 
@@ -39,11 +43,7 @@ module.exports = (app, io, state) => {
 	//rooms
 		app.post('/newRoom',
 			AuthenticationController.matchUserToken,
-			(req, res)=>{
-				state.createRoom(1)
-				state.printRooms
-				res.send("room created")
-			})
+			GameController.createRoom(req, res, state) )
 		app.get('/returnRooms', (req, res) => {
 			let rooms = state.getRooms()
 			res.send({rooms})
