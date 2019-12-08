@@ -3,6 +3,7 @@ let Room = require('./Room.js').Room
 class Gamestate{
 	constructor(){
 		this.rooms = {}
+		this.clientPool = {}
 	}
 
 	createRoom(id, user){
@@ -13,6 +14,9 @@ class Gamestate{
 			return -1
 		}
 		if(this.rooms[id] = new Room(id, user)){
+			setTimeout(() =>{
+				delete this.rooms[id]
+			}, 20000)
 			return this.rooms[id]
 		}
 		return false

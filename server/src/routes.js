@@ -8,7 +8,7 @@ module.exports = (app, io, state) => {
 	//Sockets
 
 	io.on('connection',(socket) => {
-		console.log({socket})
+		console.log(`client -  ${socket.id}  - connected`)
 		socket.on('disconnect', () => {console.log('disconnect')})
 		socket.on('newMessage', (msg) => {
 			console.log(msg)
