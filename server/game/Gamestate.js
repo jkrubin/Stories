@@ -43,7 +43,7 @@ class Gamestate{
 			this.clientPool[id] = id
 			this.clientRoomMap[id] = id
 			setTimeout(() =>{
-				delete this.rooms[id]
+				this.removeRoom(id)
 			}, 3600000)
 			return this.rooms[id]
 		}
