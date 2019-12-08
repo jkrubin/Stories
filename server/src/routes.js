@@ -39,9 +39,13 @@ module.exports = (app, io, state) => {
 	//rooms
 		app.post('/newRoom',
 			AuthenticationController.matchUserToken,
-			(req,res)=>{
+			(req, res)=>{
 				state.createRoom(1)
 				state.printRooms
 				res.send("room created")
 			})
+		app.get('/returnRooms', (req, res) => {
+			let rooms = state.getRooms()
+			res.send({rooms})
+		})
 }

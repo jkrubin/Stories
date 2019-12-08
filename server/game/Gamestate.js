@@ -1,8 +1,8 @@
-let Room = require('./Room.js')
+let Room = require('./Room.js').Room
 
 class Gamestate{
 	constructor(){
-		this.rooms = {}
+		this.rooms = {init: "hello"}
 	}
 
 	createRoom(id){
@@ -11,7 +11,11 @@ class Gamestate{
 
 	printRooms(){
 		let roomArr = this.rooms
+		console.log(`printing ${roomArr.length} rooms`)
 		console.log({roomArr})
+	}
+	getRooms(){
+		return this.rooms
 	}
 }
 
