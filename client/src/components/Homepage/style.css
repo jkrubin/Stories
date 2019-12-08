@@ -17,3 +17,6 @@
 .rooms-list-container{
 	min-width: 250px;
 }
+.rooms-list{
+	display: contents;
+}

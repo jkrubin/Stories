@@ -49,7 +49,7 @@ module.exports = (app, io, state) => {
 			res.send({rooms})
 		})
 		app.post('/joinRoom',
-			(req, res, state)=>{
+			(req, res)=>{
 				let {user, roomId} = req.body
 				room = GameController.joinRoom(req, res, state)
 				io.emit('newMessage' + roomId, {users: room.users})

@@ -21,6 +21,7 @@ class StoryBox extends React.Component{
 
 		this.createRoom = this.createRoom.bind(this)
 		this.getRooms = this.getRooms.bind(this)
+		this.joinRoom = this.joinRoom.bind(this)
 		this.toggleRoomsMenu = this.toggleRoomsMenu.bind(this)
 	}
 
@@ -29,7 +30,11 @@ class StoryBox extends React.Component{
 	}
 	createRoom(){
 		let data = {
-			id: this.context.auth.user.id
+			id: this.context.auth.user.id,
+			user: {
+				id: this.context.auth.user.id,
+				name: this.context.auth.user.name
+			}
 		}
 		fetch(api + '/newRoom', {
 			method: "POST",
@@ -85,6 +90,39 @@ class StoryBox extends React.Component{
 			console.log(error)
 		})
 	}
+	joinRoom(id){
+		if(!this.context.isAuth){
+			return false
+		}
+		let data = {
+			roomId: id,
+			user: {
+				id: this.context.auth.user.id,
+				name: this.context.auth.user.name
+			}
+		}
+		fetch(api + '/joinRoom',{
+			method:"POST",
+			headers:{
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(data)
+		}).then(res => res.json())
+		.then((data) => {
+			if(data.error){
+				console.log(data.error)
+			}else{
+				this.setState({room: data.room.id})
+				this.socket.on('newMessage' + data.room.id, (msg) => {
+					console.log('connect')
+					this.setState((prevState) => {
+						prevState.story.push(msg)
+						return prevState
+					})
+				})
+			}
+		})
+	}
 	toggleRoomsMenu(){
 		this.setState((prevState)=>{
 			return({showRooms: !prevState.showRooms}) 
@@ -109,7 +147,10 @@ class StoryBox extends React.Component{
 		})	
 		let roomsDisplay = this.state.availableRooms.map((room) => {
 			return(
-				<li className="room-list-item">id: {room.id}, users: {room.users.length}</li>
+				<li className="room-list-item">
+					id: {room.id}, users: {room.users.length}
+					<button className = "button" onClick={()=>{this.joinRoom(room.id)}}> join </button>
+				</li>
 			)
 		})	
 		return(
