@@ -20,6 +20,17 @@ class Gamestate{
 	removeClient(id){
 		delete this.clientPool[id]
 	}
+	clientCheck(id){
+		let room = this.clientPool[id]
+		if(room){
+			return this.rooms[room]
+		}
+		room = this.clientRoomMap[id]
+		if(room){
+			return this.rooms[room]
+		}
+		return false
+	}
 	createRoom(id, user, roomData){
 		if(!id){
 			return -1

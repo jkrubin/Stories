@@ -85,7 +85,8 @@ class StoryBox extends React.Component{
 					let room = data.rooms[key]
 					openRooms.push({
 						id: room.id,
-						users: room.users
+						users: room.users,
+						name: room.name
 					})
 				}
 				this.setState({availableRooms: openRooms})
