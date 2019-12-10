@@ -30,6 +30,8 @@ class Header extends React.Component{
 			if(!res.error){
 				console.log('login')
 			}
+		}).catch((error) => {
+			console.log(error)
 		})
 	}
 	render(){

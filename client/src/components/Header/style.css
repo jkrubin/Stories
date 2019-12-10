@@ -1,8 +1,8 @@
 .header{
-	position: sticky;
-	top:0px;
+/*	position: sticky;
+*/	top:0px;
 	height:100px;
-	background: linear-gradient(to right, rgba(229, 178, 109, 1), rgba(229, 178, 109, .7) 100px, #874eb0 80%);
+	background: linear-gradient(to right, rgba(229, 178, 109, 1), rgba(229, 178, 109, 1) 100px, #874eb0 80%);
 	display: inline-block;
 	width: 100%;
 	z-index: 2;

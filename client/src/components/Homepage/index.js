@@ -13,13 +13,17 @@ class Homepage extends React.Component{
 	render(){
 		return(
 			<div className="homepage">
-				{this.context.isAuth?
-					<StoryBox />
-					:
-					<div>
-						<h1> login to continue </h1>
-					</div>
-				}
+				<div className = "content">
+					{this.context.isAuth?
+						<StoryBox />
+						:
+						<div className = "login-splash">
+							<div>
+								<h1> log in above to continue </h1>
+							</div>
+						</div>
+					}
+				</div>
 			</div>
 		)
 	}
