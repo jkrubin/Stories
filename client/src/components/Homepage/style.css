@@ -186,14 +186,6 @@
 	position: relative;
 	flex:0 0 auto;
 }
-.user-pre{
-	width:75px;
-	height: 55px;
-	box-shadow: 3px 3px 5px #874eb0;
-	margin: 0 10px 0 0;
-	flex:0 0 auto;
-	font-size: 14px;
-}
 .inner-user-box{
 	position: absolute;
 	top: 5px;
@@ -202,6 +194,18 @@
 	height: 45px;
 	background-color:rgba(255, 255, 255 , .5);
 	border-radius: 5px;
+}
+.user-box.active{
+	box-shadow: 3px 3px 5px rgba(229, 178, 109, 1);	
+	border: 2px solid rgb(250, 241, 207);
+}
+.user-pre{
+	width:75px;
+	height: 55px;
+	box-shadow: 3px 3px 5px #874eb0;
+	margin: 0 10px 0 0;
+	flex:0 0 auto;
+	font-size: 14px;
 }
 .inner-user-content{
 	z-index: 2;

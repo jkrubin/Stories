@@ -18,8 +18,9 @@ module.exports = (app, io, state) => {
 		})
 		socket.on('newMessage', (msg) => {
 			console.log(msg)
-			let count = state.submitWord(msg)
-			msg["turn"] = count
+			let roomData = state.submitWord(msg)
+			msg["turn"] = roomData.turn
+			msg["users"] = roomData.users
 			io.emit('newMessage' + msg.roomId, msg)
 		})
 	})

@@ -86,8 +86,8 @@ class Gamestate{
 	submitWord(msg){
 		let id = msg.roomId
 		if(this.rooms[id]){
-			let turn = this.rooms[id].pushWord(msg)
-			return turn
+			let roomData = this.rooms[id].pushWord(msg)
+			return roomData
 		}
 		return false
 	}

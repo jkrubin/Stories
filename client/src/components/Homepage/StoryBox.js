@@ -12,6 +12,7 @@ class StoryBox extends React.Component{
 		this.state = {
 			input: '',
 			nameInput: '',
+			turn:0,
 			roomId: -1,
 			words: [],
 			users: [],
@@ -201,6 +202,9 @@ class StoryBox extends React.Component{
 				return {words: newWords}
 			})
 		}
+		if(msg.hasOwnProperty('turn')){
+			this.setState({turn: msg.turn})
+		}
 		if(msg.delete){
 			this.setState({roomId: -1, users: [], words: []})
 			this.socket.off('newMessage' + msg.delete)
@@ -240,9 +244,9 @@ class StoryBox extends React.Component{
 					</td>
 				</div>
 			)
-		})	
-		let usersDisplay = this.state.users.map((user)=>{
-			return (<UserDisplay user={user} />)
+		})
+		let usersDisplay = this.state.users.map((user, index)=>{
+			return (<UserDisplay user={user} active={(this.state.turn === index)}/>)
 		})
 		let wordsDisplay = (<div> Words Display </div>)
 		let panelDisplay = ''
@@ -273,7 +277,10 @@ class StoryBox extends React.Component{
 		if(lastPlayed){
 			lastPlayed = lastPlayed.message
 		}
-
+		let isMyTurn = false
+		if(this.state.roomId > 0){
+			isMyTurn = this.state.users[this.state.turn].id === this.context.auth.user.id
+		}
 		return(
 			<div className = "story-box">
 				{this.state.roomId === -1 ?
@@ -333,10 +340,11 @@ class StoryBox extends React.Component{
 								className="form"
 								value={this.state.input}
 								name="input" 
-								onChange = {this.handleChange} />
+								onChange = {this.handleChange} 
+								disabled = {!isMyTurn}/>
 							</div>
 							<div className="form-submit">
-								<button className="button-submit" onClick={this.handleSubmit}>Submit</button>
+								<button className="button-submit" onClick={this.handleSubmit} disabled = {!isMyTurn}>Submit</button>
 							</div>
 						</div>
 					</div>

@@ -1,14 +1,20 @@
 class Room{
 	constructor(id, user, roomData){
+		let bankUser = this.addUserWords(user)
 		this.roomId = id
 		this.words = []
-		this.users = [user]
+		this.users = [bankUser]
 		this.name = roomData.name
-
 		this.counter = 0
 	}
 	addUser(user){
-		this.users.push(user)
+		let bankUser = this.addUserWords(user)
+		this.users.push(bankUser)
+	}
+	addUserWords(user){
+		user.bank = {snow: false, tree: false}
+		user.score = 0
+		return user
 	}
 	removeUser(id){
 		let newUsers = this.users.filter((user) => {
@@ -18,9 +24,22 @@ class Room{
 	}
 
 	pushWord(words){
+		let userIndex = false
+		for(let i = 0; i < this.users.length; i++){
+			if(words.userId === this.users[i].id){
+				userIndex = i
+			}
+		}
+		let msgArr = words.message.split(" ")
+		for(let i = 0; i < msgArr.length; i++){
+			if(this.users[userIndex].bank[msgArr[i]]){
+				this.users[userIndex].bank[msgArr[i]] = true
+				this.users[userIndex].score = this.users[userIndex].score + 1 
+			}
+		}
 		this.words.push(words)
-		let count = this.incrementCounter()
-		return count
+		this.incrementCounter()
+		return this
 	}
 	getCounter(){
 		return this.counter
