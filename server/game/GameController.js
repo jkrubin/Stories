@@ -7,6 +7,16 @@ module.exports = {
 		}
 		return res.status(500).send({error: "could not create room"})
 	},
+	deleteRoom(req, res, state){
+		let {id} = req.body
+		let result = state.removeRoom(id)
+		if(result){
+			res.send({delete: result})
+			return result
+		}
+		return res.status(404).send({error: "Room not found"})
+		
+	},
 	joinRoom(req, res, state){
 		let {user, roomId, roomData} = req.body
 		let room = state.connectUserToRoom(user, roomId, roomData)

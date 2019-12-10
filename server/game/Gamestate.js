@@ -62,7 +62,7 @@ class Gamestate{
 			}
 		}
 		if(delete this.rooms[id]){
-			return true
+			return id
 		}
 		return false
 
@@ -86,8 +86,8 @@ class Gamestate{
 	submitWord(msg){
 		let id = msg.roomId
 		if(this.rooms[id]){
-			this.rooms[id].pushWord(msg)
-			return true
+			let turn = this.rooms[id].pushWord(msg)
+			return turn
 		}
 		return false
 	}

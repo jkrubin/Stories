@@ -18,7 +18,8 @@ module.exports = (app, io, state) => {
 		})
 		socket.on('newMessage', (msg) => {
 			console.log(msg)
-			state.submitWord(msg)
+			let count = state.submitWord(msg)
+			msg["turn"] = count
 			io.emit('newMessage' + msg.roomId, msg)
 		})
 	})
@@ -66,6 +67,12 @@ module.exports = (app, io, state) => {
 				}
 				io.emit('newMessage' + roomId, {users: room.users})
 
+			})
+		app.post('/deleteRoom',
+			AuthenticationController.matchUserToken,
+			(req, res) => {
+				let roomId = GameController.deleteRoom(req, res, state)
+				io.emit('newMessage' + roomId, {delete: roomId})
 			})
 		app.post('/checkActiveGame', 
 			(req, res) =>{

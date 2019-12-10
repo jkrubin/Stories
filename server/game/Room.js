@@ -19,13 +19,15 @@ class Room{
 
 	pushWord(words){
 		this.words.push(words)
-		return this.words
+		let count = this.incrementCounter()
+		return count
 	}
 	getCounter(){
 		return this.counter
 	}
 	incrementCounter(){
-		return this.counter = (this.counter + 1) % this.users.length 
+		this.counter = (this.counter + 1) % this.users.length 
+		return this.counter
 	}
 }
 
