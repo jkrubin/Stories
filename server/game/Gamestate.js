@@ -87,6 +87,7 @@ class Gamestate{
 		let id = msg.roomId
 		if(this.rooms[id]){
 			let roomData = this.rooms[id].pushWord(msg)
+			console.log(roomData)
 			return roomData
 		}
 		return false
@@ -94,7 +95,7 @@ class Gamestate{
 	printRooms(){
 		let roomArr = this.rooms
 		console.log(`printing ${roomArr.length} rooms`)
-		console.log({roomArr})
+		console.log(JSON.stringify(roomArr, null, 4))
 		return true
 	}
 	getRooms(){

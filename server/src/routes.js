@@ -17,11 +17,10 @@ module.exports = (app, io, state) => {
 			state.removeClient(id)
 		})
 		socket.on('newMessage', (msg) => {
-			console.log(msg)
 			let roomData = state.submitWord(msg)
-			msg["turn"] = roomData.turn
-			msg["users"] = roomData.users
-			io.emit('newMessage' + msg.roomId, msg)
+			//state.printRooms()
+			let resObj = {...msg, turn: roomData.counter, users: roomData.users}
+			io.emit('newMessage' + msg.roomId, resObj)
 		})
 	})
 

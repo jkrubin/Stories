@@ -23,21 +23,32 @@ class Room{
 		this.users = newUsers
 	}
 
-	pushWord(words){
+	pushWord(msg){
+		let pre = this.words
 		let userIndex = false
 		for(let i = 0; i < this.users.length; i++){
-			if(words.userId === this.users[i].id){
+			if(msg.userId === this.users[i].id){
 				userIndex = i
 			}
 		}
-		let msgArr = words.message.split(" ")
+		console.log({userIndex})
+		let msgArr = msg.message.split(" ")
+		console.log(msgArr)
 		for(let i = 0; i < msgArr.length; i++){
-			if(this.users[userIndex].bank[msgArr[i]]){
-				this.users[userIndex].bank[msgArr[i]] = true
-				this.users[userIndex].score = this.users[userIndex].score + 1 
+			console.log({inp: msgArr[i]})
+			console.log(this.users[userIndex].bank)
+			if(msgArr[i] in this.users[userIndex].bank){
+				if(!this.users[userIndex].bank[msgArr[i]]){
+					this.users[userIndex].bank[msgArr[i]] = true
+					this.users[userIndex].score++
+				}	
+				msgArr[i] = {score: true, message: msgArr[i]}
+			}else{
+				msgArr[i] = {score: false, message: msgArr[i]}
 			}
 		}
-		this.words.push(words)
+		msg.msgArr = msgArr
+		this.words.push(msg)
 		this.incrementCounter()
 		return this
 	}
