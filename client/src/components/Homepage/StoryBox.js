@@ -16,6 +16,7 @@ class StoryBox extends React.Component{
 			roomId: -1,
 			words: [],
 			users: [],
+			colors: ["rgba(52, 64, 235, .5)", "rgba(235, 62, 56, .5)", "rgba(235, 154, 56, .5)", "rgba(235, 235, 56, .5)", "rgba(25, 145, 16, .5)", "rgba(68, 194, 164, .5)", "rgba(163, 74, 212, .5)"],
 			showRooms: false,
 			availableRooms: [],
 			bottomPanel: false,
@@ -192,17 +193,19 @@ class StoryBox extends React.Component{
 		})
 	}
 	handleSocket(msg){
+		console.log({msg})
 		if(msg.users){
 			this.setState({users: msg.users})
 		}
 		if(msg.message){
 			this.setState((prevState)=>{
 				let newWords = prevState.words
-				newWords.push(msg)
+				let {message, userId, msgArr} = msg
+				newWords.push({message, userId, msgArr})
 				return {words: newWords}
 			})
 		}
-		if(msg.hasOwnProperty('turn')){
+		if('turn' in msg){
 			this.setState({turn: msg.turn})
 		}
 		if(msg.delete){
@@ -212,8 +215,19 @@ class StoryBox extends React.Component{
 	}
 	render(){
 		let storyDisplay = this.state.words.map((msg) => {
-			const trimmed = msg.message.trim()
-			return (<span>{trimmed} </span>)
+			let userInd = 0
+			for(let i = 0; i < this.state.users.length; i++){
+				if(this.state.users[i].id == msg.userId){
+					userInd = i
+				}
+			}
+			const message = msg.msgArr.map((word) =>{
+				if(word.score){
+					return (<span className='scored' style={{backgroundColor: this.state.colors[userInd]}}>{word.message.concat(' ')} </span>)
+				}
+				return (word.message.concat(' '))
+			})
+			return (<span style={{backgroundColor: this.state.colors[userInd]}}>{message} </span>)
 		})
 		let roomsDisplay = this.state.availableRooms.map((room) => {
 			let joinable = room.roomId != this.state.roomId
@@ -245,8 +259,12 @@ class StoryBox extends React.Component{
 				</div>
 			)
 		})
+		let myScore = 0
 		let usersDisplay = this.state.users.map((user, index)=>{
-			return (<UserDisplay user={user} active={(this.state.turn === index)}/>)
+			if(this.state.turn === index){
+				myScore = user.score
+			}
+			return (<UserDisplay user={user} index={index} active={(this.state.turn === index)}/>)
 		})
 		let wordsDisplay = (<div> Words Display </div>)
 		let panelDisplay = ''
@@ -318,7 +336,7 @@ class StoryBox extends React.Component{
 							</div>
 							<div className="toolbar-item score">
 								<p>Score</p>
-								<h1> 3/10 </h1>
+								<h1> {myScore} </h1>
 							</div>
 							<div className="toolbar-item review">
 								<p> last played: </p>
