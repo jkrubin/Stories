@@ -92,6 +92,13 @@ class Gamestate{
 		}
 		return false
 	}
+	challenge(userId){
+		let room = this.clientCheck(userId)
+		if(room){
+			return room.challenge(userId)
+		}
+		reurn false
+	}
 	printRooms(){
 		let roomArr = this.rooms
 		console.log(`printing ${roomArr.length} rooms`)

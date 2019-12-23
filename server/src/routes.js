@@ -22,6 +22,10 @@ module.exports = (app, io, state) => {
 			let resObj = {...msg, turn: roomData.counter, users: roomData.users}
 			io.emit('newMessage' + msg.roomId, resObj)
 		})
+		socket.on('challenge', (msg) => {
+			let res = state.challenge(msg.userId)
+			io.emit('newMessage' + msg.roomId, res)
+		})
 	})
 
 	//Users edpoint
