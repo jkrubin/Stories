@@ -97,7 +97,7 @@ class Gamestate{
 		if(room){
 			return room.challenge(userId)
 		}
-		reurn false
+		return false
 	}
 	printRooms(){
 		let roomArr = this.rooms

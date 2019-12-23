@@ -33,23 +33,23 @@ class Room{
 			}
 		}
 		if(userInd === false){
-			return {error:"user not found"}
+			return {error:{userId, message:"user not found"}}
 		}
 		if(this.users[userInd].life === 0){
-			return {error: "you cannot challenge any more"}
+			return {error: {userId, message:"you cannot challenge any more"}}
 		}
 		if(lastPlayed.userId === userId){
-			return {error: "Cannot challenge your own word"}
+			return {error: {userId, message:"Cannot challenge your own word"}}
 		}
 		if(lastPlayed.challenge === true){
-			return {error: "This has already been challenged"}
+			return {error: {userId, message:"This has already been challenged"}}
 		}
 		if(lastPlayed.score > 0){ //Challenge won
 			lastPlayed.challenge = true
-			return {challenge: true, words: this.words, users:this.users}
+			return {challenge:{state: true, userId}, words: this.words, users:this.users}
 		}else{ //Challenge lost
 			this.users[userInd].life--
-			return {challenge: false, users:this.users}
+			return {challenge:{state: false, userId}, users:this.users}
 
 		}
 
