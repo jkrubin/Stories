@@ -26,6 +26,11 @@ module.exports = (app, io, state) => {
 			let res = state.challenge(msg.userId)
 			io.emit('newMessage' + msg.roomId, res)
 		})
+		socket.on('startGame', (msg) => {
+			let {id, roomId, prompt} = msg
+			let res = state.startGame(id, roomId, prompt)
+			io.emit('newMessage' + msg.roomId, res)
+		})
 	})
 
 	//Users edpoint

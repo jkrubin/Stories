@@ -6,17 +6,40 @@ class Room{
 		this.words = []
 		this.users = [bankUser]
 		this.name = roomData.name
-		this.counter = 0
+		this.counter = -1
+		this.turn = -1
+		this.prompt = ''
 	}
 	addUser(user){
 		let bankUser = this.addUserWords(user)
 		bankUser.life = 3
+		bankUser.connect = true
 		this.users.push(bankUser)
 	}
 	addUserWords(user){
 		user.bank = {snow: false, tree: false}
 		user.score = 0
 		return user
+	}
+	setPrompt(prompt){
+		this.prompt = prompt
+		this.counter = 0
+		this.turn = 0
+		return({prompt: this.prompt, counter: this.counter, turn: this.turn})
+	}
+	connect(id){
+		for(let i=0; i < this.users.length; i++){
+			if(this.users[i].id === id){
+				this.users[i].connect = true
+			}
+		}
+	}
+	disconnect(id){
+		for(let i=0; i < this.users.length; i++){
+			if(this.users[i].id === id){
+				this.users[i].connect = false
+			}
+		}
 	}
 	removeUser(id){
 		let newUsers = this.users.filter((user) => {
@@ -92,6 +115,7 @@ class Room{
 	}
 	incrementCounter(){
 		this.counter = (this.counter + 1) % this.users.length 
+		this.turn++
 		return this.counter
 	}
 }

@@ -12,6 +12,7 @@ class Gamestate{
 		if(room && this.rooms[room]){
 			//client is reconnecting to active room
 			this.clientPool[id] = room
+			this.rooms[room].connect(id)
 		}else{
 			//client is not in any rooms
 			this.clientPool[id] = false
@@ -19,6 +20,20 @@ class Gamestate{
 	}
 	removeClient(id){
 		delete this.clientPool[id]
+		let room = this.clientRoomMap[id]
+		if(room && this.rooms[room]){
+			this.rooms[room].disconnect(id)
+		}
+	}
+	startGame(id, roomId, prompt){
+		if(id !== roomId){
+			return({error: {message: "you do not own this room"}})
+		}
+		if(this.isRoomExists(id)){
+			return this.rooms[id].setPrompt(prompt)
+		}else{
+			return({error: {userId: id, message: "you do not own this room"}})
+		}
 	}
 	clientCheck(id){
 		let room = this.clientPool[id]
