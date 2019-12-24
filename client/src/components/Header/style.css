@@ -21,6 +21,7 @@
 .login-form{
 	margin-top:auto;
 	margin-bottom: auto;
+	max-width: 100%;
 }
 .account{
 	display: flex;

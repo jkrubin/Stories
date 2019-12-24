@@ -42,6 +42,7 @@ class Header extends React.Component{
 					<img 
 						src = {require('../../assets/Stories_Logo.png')} 
 						style = {{height:'100px', width:'auto'}}
+						alt = "Stories With Enemies"
 					/>
 				</div>
 				<AuthConsumer>
@@ -50,7 +51,6 @@ class Header extends React.Component{
 						{isAuth? (
 							<div className="login-form">
 								<div className="account">
-									<img src={auth.user.mimeType} height="66" className="pr-image pr-image-top" style={{marginTop: 0}} /> 
 									<p className="team-name"> {auth.user.bio} </p>
 									<button className="logout" onClick={logout}> Log Out </button>
 								</div>
@@ -58,8 +58,9 @@ class Header extends React.Component{
 						) : (
 							<div className="login-form">
 								<table>
+									<tbody>
 									<tr>
-										<div className="form-group">
+										<td className="form-group">
 											<input 
 											type="text"
 											className="email-form form"
@@ -67,10 +68,10 @@ class Header extends React.Component{
 											name="email" 
 											onChange = {this.handleChange}
 											placeholder = "email" />
-										</div>
+										</td>
 									</tr>
 									<tr>
-										<div className="form-group">
+										<td className="form-group">
 											<input 
 											type="password"
 											className="password-form form"
@@ -78,13 +79,14 @@ class Header extends React.Component{
 											name="password" 
 											onChange = {this.handleChange}
 											placeholder = "password" />
-										</div>
+										</td>
 									</tr>
 									<tr>
-										<div className="form-submit">
+										<td className="form-submit">
 											<button className="button-submit" onClick={this.handleSubmit}>Login</button>
-										</div>
+										</td>
 									</tr>
+									</tbody>
 								</table>
 							</div>
 						)}

@@ -10,6 +10,7 @@
 .login-splash{
 	height: 200px;
 	width: 450px;
+	max-width: 100%;
 	display: flex;
 	align-items: center;
 	margin:auto;
@@ -190,6 +191,8 @@
 	background:green;
 	position: relative;
 	flex:0 0 auto;
+	border: 2px solid black;
+
 }
 .inner-user-box{
 	position: absolute;
@@ -243,4 +246,14 @@
 .panel-content{
 	height:300px;
 	overflow-y: auto;
+}
+.bank-list{
+	display: flex;
+	flex-direction: column;
+}
+.bank-word{
+	margin-top: 5px;
+}
+.bank-word.complete{
+	text-decoration: line-through;
 }
