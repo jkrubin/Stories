@@ -1,3 +1,4 @@
+let fetch = require('node-fetch');
 class Room{
 	constructor(id, user, roomData){
 		let bankUser = this.addUserWords(user)
@@ -16,10 +17,41 @@ class Room{
 		bankUser.connect = true
 		this.users.push(bankUser)
 	}
-	addUserWords(user){
+	addUserWords(user, code, word){
 		user.bank = {snow: false, tree: false}
 		user.score = 0
 		return user
+	}
+	async createBanks(code, word){
+		return new Promise((resolve, reject) =>{
+			fetch(`http://api.datamuse.com/words?rel_${code}=${word}`, {
+				method: "GET",
+				headers:{
+					"Content-Type": "application/json",
+				},
+			})
+			.then(res => res.json())
+			.then((data) => {
+				let maxWords = 5
+				if(data.length > this.users.length * 5){
+					maxWords = Math.floor(data.length / this.users.length)
+				}
+				let wordInd = 0;
+				for(let i = 0; i < this.users.length; i++){
+					let newBank = {}
+					for(let j = 0; j < maxWords; j++){
+						let bankWord = data[wordInd].word
+						newBank[bankWord] = false
+					}
+					this.users[i].bank = newBank
+				}
+				resolve({prompt: this.prompt, counter: this.counter, turn: this.turn, users: this.users})
+			})
+			.catch((error) => {
+				console.log(error)
+				reject(error)
+			})		
+		})
 	}
 	setPrompt(prompt){
 		this.prompt = prompt

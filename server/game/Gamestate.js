@@ -30,7 +30,8 @@ class Gamestate{
 			return({error: {message: "you do not own this room"}})
 		}
 		if(this.isRoomExists(id)){
-			return this.rooms[id].setPrompt(prompt)
+			this.rooms[id].setPrompt(prompt)
+			this.rooms[id].createBanks('jja', 'blue')
 		}else{
 			return({error: {userId: id, message: "you do not own this room"}})
 		}
