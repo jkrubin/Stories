@@ -19,7 +19,7 @@ module.exports = (app, io, state) => {
 		socket.on('newMessage', (msg) => {
 			let roomData = state.submitWord(msg)
 			//state.printRooms()
-			let resObj = {...msg, turn: roomData.counter, users: roomData.users}
+			let resObj = {...msg, turn: roomData.turn, counter: roomData.counter, users: roomData.users}
 			io.emit('newMessage' + msg.roomId, resObj)
 		})
 		socket.on('challenge', (msg) => {
@@ -27,9 +27,12 @@ module.exports = (app, io, state) => {
 			io.emit('newMessage' + msg.roomId, res)
 		})
 		socket.on('startGame', (msg) => {
-			let {id, roomId, prompt} = msg
-			let res = state.startGame(id, roomId, prompt)
-			io.emit('newMessage' + msg.roomId, res)
+			let {id, roomId, prompt, seed} = msg
+			state.startGame(id, roomId, prompt, seed)
+			.then((data) => {
+				console.log({route: data})
+				io.emit('newMessage' + msg.roomId, data)
+			})
 		})
 	})
 

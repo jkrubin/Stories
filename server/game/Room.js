@@ -33,7 +33,7 @@ class Room{
 			.then(res => res.json())
 			.then((data) => {
 				let maxWords = 5
-				if(data.length > this.users.length * 5){
+				if(data.length < this.users.length * 5){
 					maxWords = Math.floor(data.length / this.users.length)
 				}
 				let wordInd = 0;
@@ -41,6 +41,7 @@ class Room{
 					let newBank = {}
 					for(let j = 0; j < maxWords; j++){
 						let bankWord = data[wordInd].word
+						wordInd++
 						newBank[bankWord] = false
 					}
 					this.users[i].bank = newBank

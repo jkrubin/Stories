@@ -5,6 +5,7 @@ class Gamestate{
 		this.rooms = {}
 		this.clientRoomMap= {}
 		this.clientPool = {}
+		this.seedList = ["blue","spy",]
 	}
 
 	addClient(id){
@@ -25,16 +26,25 @@ class Gamestate{
 			this.rooms[room].disconnect(id)
 		}
 	}
-	startGame(id, roomId, prompt){
-		if(id !== roomId){
-			return({error: {message: "you do not own this room"}})
-		}
-		if(this.isRoomExists(id)){
-			this.rooms[id].setPrompt(prompt)
-			this.rooms[id].createBanks('jja', 'blue')
-		}else{
-			return({error: {userId: id, message: "you do not own this room"}})
-		}
+	async startGame(id, roomId, prompt, seed){
+		return new Promise((resolve, reject) => {
+			if(id !== roomId){
+				resolve({error: {message: "you do not own this room"}})
+			}
+			if(this.isRoomExists(id)){
+				this.rooms[id].setPrompt(prompt)
+				if(seed == undefined){
+					seed = 
+				}
+				this.rooms[id].createBanks('jja', seed)
+					.then((data) => {
+						console.log({...data})
+						resolve ({...data})
+					})
+			}else{
+				resolve({error: {userId: id, message: "you do not own this room"}})
+			}
+		})
 	}
 	clientCheck(id){
 		let room = this.clientPool[id]
