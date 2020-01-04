@@ -5,6 +5,7 @@ import { api } from "../../config/config"
 import UserDisplay from "./UserDisplay"
 import WordBank from "./WordBank"
 import RoomsDisplay from "./RoomsDisplay"
+import Alert from "../Alert"
 import './style.css'
 
 class StoryBox extends React.Component{
@@ -12,6 +13,8 @@ class StoryBox extends React.Component{
 		super(props, context)
 
 		this.state = {
+			alert: false,
+			showAlert: false,
 			input: '',
 			promptInput: '',
 			nameInput: '',
@@ -20,6 +23,7 @@ class StoryBox extends React.Component{
 			roomId: -1,
 			words: [],
 			users: [],
+			userScroll: 0,
 			colors: ["rgba(52, 64, 235, .5)", "rgba(235, 62, 56, .5)", "rgba(235, 154, 56, .5)", "rgba(235, 235, 56, .5)", "rgba(25, 145, 16, .5)", "rgba(68, 194, 164, .5)", "rgba(163, 74, 212, .5)"],
 			showRooms: false,
 			challenge: false,
@@ -30,6 +34,7 @@ class StoryBox extends React.Component{
 		this.handleChange = this.handleChange.bind(this)
 		this.toggleRoomsMenu = this.toggleRoomsMenu.bind(this)
 		this.toggleBottomPanel = this.toggleBottomPanel.bind(this)
+		this.toggleAlert = this.toggleAlert.bind(this)
 
 		//Fetch		
 		this.createRoom = this.createRoom.bind(this)
@@ -49,6 +54,12 @@ class StoryBox extends React.Component{
 
 	componentWillUnmount(){
 		this.socket.disconnect()
+	}
+	componentDidUpdate(){
+		let activeUserElement = document.getElementsByClassName('user-box active')[0]
+		if(activeUserElement !== undefined){
+			activeUserElement.scrollIntoView()
+		}
 	}
 	handleChange(event){
 		let {name, value} = event.target
@@ -213,9 +224,17 @@ class StoryBox extends React.Component{
 			}
 		})
 	}
+	toggleAlert(state){
+		if(state == undefined){
+			this.setState((prevState) => {
+				return {showAlert: !prevState.showAlert}
+			})
+		}else{
+			this.setState({showAlert: state})
+		}
+	}
 	socketListen(room){
 		this.socket.on('newMessage' + room, (msg) => {
-			console.log({msg})
 			this.handleSocket(msg)
 		})
 	}
@@ -235,6 +254,13 @@ class StoryBox extends React.Component{
 		if('turn' in msg){
 			this.setState({turn: msg.turn})
 		}
+		if('counter' in msg){
+			this.setState({counter: msg.counter}, 
+				() => {
+					//document.getElementById('user-scroll').scrollLeft = (this.state.counter) * 50
+				}
+			)			
+		}
 		if('prompt' in msg){
 			this.setState({prompt: msg.prompt})
 		}
@@ -243,7 +269,13 @@ class StoryBox extends React.Component{
 		}
 		if(msg.challenge){
 			console.log(msg.challenge)
-			alert(`User ${msg.challenge.userId} challenged and ${msg.challenge.state}`)
+			let userInd = false
+			for(let i = 0; i < this.state.users.length; i++){
+				if(this.state.users[i].id === msg.challenge.userId){
+					userInd = i
+				}
+			}
+			this.setState({showAlert: true, alert: `${this.state.users[userInd].name} challenged and ${(msg.challenge.state ? "succeeded" : `failed. they have ${msg.users[userInd].life} lives left`)}`})
 		}
 		if('error' in msg){
 			if('userId' in msg.error){
@@ -260,42 +292,67 @@ class StoryBox extends React.Component{
 		}
 	}
 	render(){
+
+		//Get index for user
 		let userInd = false
 		for(let i = 0; i < this.state.users.length; i++){
 			if(this.context.auth.user.id === this.state.users[i].id){
 				userInd = i
 			}
 		}
+
+		//Create Story Display
 		let storyDisplay
+		let userScores = {}
+		let lastPlayed = false
+		for(let i = 0; i < this.state.users.length; i++){
+			userScores[this.state.users[i].id] = 0
+		}
 		if(this.state.turn === -1){
 			storyDisplay = (<div> Waiting for prompt...</div>)
 		}else{
 			storyDisplay = this.state.words.map((msg, index) => {
-				let userInd = 0
+				//Get the user who posted the message and update their score
+				let userMsgInd = 0
 				for(let i = 0; i < this.state.users.length; i++){
 					if(this.state.users[i].id === msg.userId){
-						userInd = i
+						userMsgInd = i
 					}
 				}
+				if((index !== this.state.words.length - 1) && (msg.challenge !== true)){
+					userScores[msg.userId] += msg.score
+				}
+
+				//Get each word in message for score highlighting
 				const message = msg.msgArr.map((word) =>{
 					if(word.score && (index !== this.state.words.length - 1)){
-						return (<span className='scored' style={{backgroundColor: this.state.colors[userInd]}}>{word.message.concat(' ')} </span>)
+
+						return (<span className='scored' style={{backgroundColor: this.state.colors[userMsgInd]}}>{word.message.concat(' ')} </span>)
 					}
 					return (word.message.concat(' '))
 				})
-				return (<span style={{backgroundColor: this.state.colors[userInd]}} key={index}>{message} </span>)
+				let spanClass = ''
+				if(msg.challenge === true){
+					spanClass = "challenge-true"
+				}
+				let disp = (<span style={{backgroundColor: this.state.colors[userMsgInd]}} key={index}>{message} </span>)
+				if(index === this.state.words.length - 1){
+					lastPlayed = disp
+				}
+				return disp
 			})
 		}
+		//Users Display
 		let myScore = 0
 		let usersDisplay = this.state.users.map((user, index)=>{
-			if(this.state.turn === index){
-				myScore = user.score
-			}
-			return (<UserDisplay user={user} index={index} active={(this.state.turn === index)} key={user.id} />)
+			let score = userScores[user.id]
+			return (<UserDisplay user={user} index={index} active={(this.state.counter === index)} key={user.id} score={score} />)
 		})
+
+		//Bottom panel
 		let panelDisplay = ''
 		switch(this.state.bottomPanel){
-			case 1:
+			case 1: //DISPLAY ROOMS
 				panelDisplay = (
 					<div className="rooms-list-container">
 						<button className="button" onClick={this.getRooms}> Update rooms list </button>
@@ -309,19 +366,17 @@ class StoryBox extends React.Component{
 					</div>
 				)
 				break
-			case 2:
+			case 2: //DISPLAY WORD BANK
 				panelDisplay = <WordBank bank = {this.state.users[userInd].bank} />
 				break
-			default:
+			default: //NO DISPLAY
 				panelDisplay = (<div> no display </div>)
 		}
-		let lastPlayed = this.state.words.slice(-1)[0]
-		if(lastPlayed){
-			lastPlayed = lastPlayed.message
-		}
+
+		//Check is my turn?
 		let isMyTurn = false
-		if(this.state.roomId > 0 && (this.state.turn >= 0)){
-			isMyTurn = this.state.users[this.state.turn].id === this.context.auth.user.id
+		if(this.state.roomId > 0 && (this.state.counter >= 0)){
+			isMyTurn = this.state.users[this.state.counter].id === this.context.auth.user.id
 		}
 		return(
 			<div className = "story-box">
@@ -346,7 +401,7 @@ class StoryBox extends React.Component{
 						<div className="room-header title-header">
 							<h1>Current Room: {this.state.name}</h1>
 						</div>
-						<div className = "user-container">
+						<div className = "user-container" id="user-scroll">
 							<div className = "user-pre">
 								You are playing with:
 							</div>
@@ -356,13 +411,9 @@ class StoryBox extends React.Component{
 							<div className="prompt toolbar-item">
 								<p>Prompt: {this.state.prompt} </p>
 							</div>
-							<div className="toolbar-item score">
-								<p>Score</p>
-								<h1> {myScore} </h1>
-							</div>
 							<div className="toolbar-item review">
 								<p> last played: </p>
-								<p> {lastPlayed} </p>
+								<p> {lastPlayed? lastPlayed : "waiting for play..."} </p>
 							</div>
 							<div className="toolbar-item challenge-container">
 								<div className="challenge-button" onClick={this.handleChallenge}>
@@ -371,6 +422,7 @@ class StoryBox extends React.Component{
 							</div>
 						</div>
 						<div className="story-display">
+							<Alert message={this.state.alert} toggle={this.toggleAlert} show={this.state.showAlert} />
 							{storyDisplay}
 						</div>
 						<div className="input-display">
@@ -401,7 +453,7 @@ class StoryBox extends React.Component{
 										disabled = {!isMyTurn}/>
 									</div>
 									<div className="form-submit">
-										<button className="button-submit" onClick={this.handleSubmit} disabled = {!isMyTurn}>Submit</button>
+										<button className="button-submit button" onClick={this.handleSubmit} disabled = {!isMyTurn}>Submit</button>
 									</div>
 								</div>
 							}
@@ -410,8 +462,9 @@ class StoryBox extends React.Component{
 				}
 				<div className = "bottom-container">
 					<div className = "bottom-bar">
-						<button className="button" onClick= {()=>{this.toggleBottomPanel(1)}}> Rooms </button>
-						<button className="button" onClick= {()=>{this.toggleBottomPanel(2)}} disabled = {!(this.state.roomId > 0)}> Word Bank </button>
+						<button className={"button " + (this.state.bottomPanel === 1 ? "active" : "")} onClick= {()=>{this.toggleBottomPanel(1)}}> Join Rooms... </button>
+						<button className={"button " + (this.state.bottomPanel === 2 ? "active" : "")} onClick= {()=>{this.toggleBottomPanel(2)}} disabled = {!(this.state.roomId > 0)}> Word Bank </button>
+						<button className="button" onClick= {()=>{this.toggleBottomPanel(false)}} disabled = {!this.state.bottomPanel}> (X) </button>
 					</div>
 					<div className = "bottom-panel" style = {{maxHeight: (this.state.bottomPanel? "300px" : "0px")}}>
 						<div className="panel-content"> {panelDisplay} </div>
